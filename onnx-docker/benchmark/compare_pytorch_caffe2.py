@@ -12,25 +12,25 @@ from torch.utils.model_zoo import load_url
 from torch import nn
 import torchvision
 
-def create_graph(model_name, batch_size):
+def create_model(model_name, batch_size):
     model = getattr(torchvision.models, model_name)(pretrained=False)
     model = model.eval()
     dummy_input = Variable(torch.rand(batch_size, 3, 224, 224))
     torch.onnx.export(model, dummy_input, "tmp.onnx", export_params=True)
-    graph = onnx.load("tmp.onnx")
+    onnx_model = onnx.load("tmp.onnx")
     os.remove("tmp.onnx")
-    return graph
+    return onnx_model
 
 
 def benchmark_caffe2(model_name, batch_size, runs):
-    graph = create_graph(model_name, batch_size)
+    model = create_model(model_name, batch_size)
     dummy_input = np.ndarray((batch_size, 3, 224, 224), dtype=np.float32)
-    prepared_backend = onnx_caffe2.backend.prepare(graph)
-    def forward_graph(x):
-        w = {graph.input[-1]: x} # swap the input in the graph for dummy input
+    prepared_backend = onnx_caffe2.backend.prepare(model)
+    def forward_model(x):
+        w = {model.graph.input[0].name: x} # swap the input in the model for dummy input
         prepared_backend.run(w)[0]
 
-    t = Timer(lambda: forward_graph(dummy_input))
+    t = Timer(lambda: forward_model(dummy_input))
     avg_time = t.timeit(number=runs) / float(runs)  # temporarily disables GC
     return avg_time
 
