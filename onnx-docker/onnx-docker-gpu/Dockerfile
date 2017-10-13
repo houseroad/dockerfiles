@@ -18,7 +18,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
          wget \
          unzip \
          libjpeg-dev \
-         libpng-dev && \
+         libpng-dev \
+	 libgflags-dev \
+         libgoogle-glog-dev \
+         liblmdb-dev && \
      rm -rf /var/lib/apt/lists/*
 
 RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda2-4.2.12-Linux-x86_64.sh  && \
@@ -32,14 +35,15 @@ RUN mkdir -p ~/programs/ninja && cd ~/programs/ninja && wget https://github.com/
 ENV PATH /opt/conda/bin:/root/programs/ninja:$PATH
 
 RUN conda install -c soumith magma-cuda80 cuda80 && conda clean -ya
-RUN conda install -c conda-forge protobuf && conda clean -ya
-RUN conda install conda-build numpy pyyaml scipy ipython mkl setuptools cmake gcc cffi glog gflags future six && conda clean -ya
+RUN conda install conda-build numpy pyyaml scipy ipython mkl setuptools cmake cffi future six && conda clean -ya
 RUN conda install -c intel mkl-include
 
 RUN pip install --upgrade git+https://github.com/Maratyszcza/PeachPy
 RUN pip install --upgrade git+https://github.com/Maratyszcza/confu
 
 RUN mkdir -p /root/programs
+
+RUN conda install -c ezyang/label/gcc5 protobuf && conda clean -ya
 
 RUN cp /usr/lib/x86_64-linux-gnu/libcudnn* /usr/local/cuda/lib64
 RUN git clone --recursive https://github.com/houseroad/caffe2 /root/programs/caffe2 && cd /root/programs/caffe2 \
@@ -51,8 +55,9 @@ ENV TORCH_CUDA_ARCH_LIST "3.0;3.5;5.0;5.2+PTX;6.0;6.1"
 RUN git clone --recursive https://github.com/pytorch/pytorch /root/programs/pytorch && cd /root/programs/pytorch && python setup.py install && git clean -xfd
 
 #RUN conda install -c ezyang onnx onnx-caffe2
+ENV CONDA_PREFIX /opt/conda
 RUN git clone --recursive https://github.com/onnx/onnx /root/programs/onnx \
-    && cd /root/programs/onnx && git checkout 0225b54cc105e70108677f3562e19676cae3f255 && cd .. && pip install -e onnx/
+    && cd /root/programs/onnx && cd .. && pip install -e onnx/
 RUN git clone --recursive https://github.com/onnx/onnx-caffe2 /root/programs/onnx-caffe2 \
     && cd /root/programs && pip install -e onnx-caffe2/
 
@@ -66,5 +71,6 @@ ENV LD_LIBRARY_PATH /usr/local/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
 WORKDIR /workspace
 RUN chmod -R a+w /workspace
 
-RUN curl -o /workspace/tutorial-with-mobile-part.py "http://pytorch.org/tutorials/_downloads/super_resolution_with_caffe2.py"
-RUN sed '/assert_almost_equal/q' /workspace/tutorial-with-mobile-part.py > /workspace/tutorial-without-mobile-part.py
+#RUN curl -o /workspace/tutorial-with-mobile-part.py "http://pytorch.org/tutorials/_downloads/super_resolution_with_caffe2.py"
+RUN curl -o /workspace/tutorial-with-mobile-part.py "https://raw.githubusercontent.com/houseroad/tutorials/95bf3983baa537bb97e4a069e665fd68b05c616f/advanced_source/super_resolution_with_caffe2.py"
+RUN sed '/result looks good/q' /workspace/tutorial-with-mobile-part.py > /workspace/tutorial-without-mobile-part.py
