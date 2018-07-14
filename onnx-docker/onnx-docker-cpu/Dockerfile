@@ -21,11 +21,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
          python python-pip python-dev python-setuptools && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install wheel && pip install ipython==5.0
+RUN pip install --upgrade pip
+RUN pip install wheel ipython==5.0.0 numpy scipy pyyaml
 
-RUN mkdir -p /root/programs && \
-    git clone --recursive https://github.com/onnxbot/onnx-fb-universe.git /root/programs
-
-RUN cd /root/programs && ./install-develop.sh
+RUN mkdir -p /root/programs
+RUN git clone --recursive https://github.com/onnx/onnx.git /root/programs/onnx
+RUN git clone --recursive https://github.com/pytorch/pytorch.git /root/programs/pytorch
+RUN cd /root/programs/onnx; python setup.py develop
+RUN cd /root/programs/pytorch; pip install -r "caffe2/requirements.txt"; \
+    CMAKE_ARGS="-DCAFFE2_LINK_LOCAL_PROTOBUF=OFF -DBUILD_CUSTOM_PROTOBUF=OFF -DUSE_CUDA=OFF" python setup_caffe2.py develop
+RUN cd /root/programs/pytorch; pip install -r "requirements.txt"; \
+    NO_CUDA=1 python setup.py build develop
 
 WORKDIR /root/programs
