@@ -25,9 +25,9 @@ RUN pip install --upgrade pip
 RUN pip install wheel ipython==5.0.0 numpy scipy pyyaml pytest tabulate
 
 RUN mkdir -p /root/programs
-RUN git clone --recursive https://github.com/onnx/onnx.git /root/programs/onnx
+RUN git clone --recursive https://github.com/Ac2zoom/onnx.git /root/programs/onnx
 RUN git clone --recursive https://github.com/pytorch/pytorch.git /root/programs/pytorch
-RUN cd /root/programs/onnx; python setup.py develop
+RUN cd /root/programs/onnx; git checkout scoreboard; python setup.py develop
 RUN cd /root/programs/pytorch; pip install -r "caffe2/requirements.txt"; \
     CMAKE_ARGS="-DCAFFE2_LINK_LOCAL_PROTOBUF=OFF -DBUILD_CUSTOM_PROTOBUF=OFF -DUSE_CUDA=OFF" python setup_caffe2.py develop
 RUN cd /root/programs/pytorch; pip install -r "requirements.txt"; \
