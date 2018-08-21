@@ -18,19 +18,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
          libprotobuf-dev \
          protobuf-compiler \
          cmake \
-         python python-pip python-dev python-setuptools && \
+         python3 python3-pip python3-dev python3-setuptools && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip
-RUN pip install wheel ipython==5.0.0 numpy scipy pyyaml pytest tabulate
+RUN pip3 install --upgrade pip
+RUN pip3 install wheel ipython==5.0.0 numpy scipy pyyaml pytest tabulate
 
 RUN mkdir -p /root/programs
 RUN git clone --recursive https://github.com/Ac2zoom/onnx.git /root/programs/onnx
 RUN git clone --recursive https://github.com/pytorch/pytorch.git /root/programs/pytorch
-RUN cd /root/programs/onnx; git checkout scoreboard; python setup.py develop
-RUN cd /root/programs/pytorch; pip install -r "caffe2/requirements.txt"; \
-    CMAKE_ARGS="-DCAFFE2_LINK_LOCAL_PROTOBUF=OFF -DBUILD_CUSTOM_PROTOBUF=OFF -DUSE_CUDA=OFF" python setup_caffe2.py develop
-RUN cd /root/programs/pytorch; pip install -r "requirements.txt"; \
-    NO_CUDA=1 python setup.py build develop
+RUN cd /root/programs/onnx; git checkout scoreboard; python3 setup.py develop
+RUN cd /root/programs/pytorch; pip3 install -r "caffe2/requirements.txt"; \
+    CMAKE_ARGS="-DCAFFE2_LINK_LOCAL_PROTOBUF=OFF -DBUILD_CUSTOM_PROTOBUF=OFF -DUSE_CUDA=OFF" python3 setup_caffe2.py develop
+RUN cd /root/programs/pytorch; pip3 install -r "requirements.txt"; \
+    NO_CUDA=1 python3 setup.py build develop
 
 WORKDIR /root/programs
