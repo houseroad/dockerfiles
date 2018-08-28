@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN apt remove -y python-pip
 RUN pip install --upgrade pip
-RUN pip install wheel ipython==5.0.0 numpy scipy pyyaml pytest tabulate ninja
+RUN pip install wheel ipython==5.0.0 numpy scipy pyyaml pytest tabulate ninja future
 
 RUN mkdir -p /root/programs
 RUN git clone --recursive https://github.com/Ac2zoom/onnx.git /root/programs/onnx
