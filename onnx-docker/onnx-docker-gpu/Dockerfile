@@ -25,10 +25,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
          libprotobuf-dev \
          protobuf-compiler \
          cmake \
-         python python-dev python-setuptools && \
+         python python-pip python-dev python-setuptools && \
      rm -rf /var/lib/apt/lists/*
 
-RUN apt remove python-pip; pip install --upgrade pip
+RUN pip install --upgrade pip; apt remove python-pip
 RUN pip install wheel ipython==5.0 numpy scipy pyyaml
 
 RUN mkdir -p /root/programs
