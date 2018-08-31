@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 RUN pip install --upgrade pip; apt remove python-pip
-RUN pip install wheel ipython==5.0.0 numpy scipy pyyaml pytest tabulate ninja future tensorflow torchvision
+RUN pip install wheel ipython==5.0.0 numpy scipy pyyaml pytest tabulate ninja future tf-nightly torchvision
 
 RUN mkdir -p /root/programs
 RUN git clone --recursive https://github.com/Ac2zoom/onnx.git /root/programs/onnx
