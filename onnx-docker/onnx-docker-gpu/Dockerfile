@@ -28,8 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
          python python-pip python-dev python-setuptools && \
      rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip; apt remove python-pip
-RUN pip install wheel ipython==5.0 numpy scipy pyyaml
+RUN pip install --upgrade -y pip; apt remove python-pip
+RUN pip install -y wheel ipython==5.0 numpy scipy pyyaml
 
 RUN mkdir -p /root/programs
 RUN git clone --recursive https://github.com/onnx/onnx.git /root/programs/onnx
