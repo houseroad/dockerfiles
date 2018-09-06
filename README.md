@@ -4,6 +4,7 @@ To store the docker BUILD scripts.
 
 ## Build the images
 docker build onnx-docker/onnx-docker-gpu
+
 docker build onnx-docker/onnx-docker-cpu
 
 ## Update the images
